@@ -1,0 +1,1051 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legendas PT-BR — guia / guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ---
+   purpose: guia bilingue (PT/EN) do pipeline video -> .srt
+   gotcha: todo o texto vem de DECKS no fim do arquivo; markup e gerado em render()
+   --- */
+
+:root{
+  --letterbox:#0E1216;
+  --panel:#161C22;
+  --panel-2:#1D242B;
+  --rule:#2B343D;
+  --text:#E6EBF0;
+  --muted:#95A3B1;
+  --cue:#FFD34D;
+  --cue-dim:rgba(255,211,77,.14);
+  --ok:#7BD4A8;
+  --shell:clamp(1.1rem,4vw,2.5rem);
+  --col:70ch;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--letterbox);color:var(--text);
+  font-family:"IBM Plex Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:clamp(15px,.4vw + 14px,17px);line-height:1.62;
+  overflow-x:clip;
+}
+code,kbd,.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+code{
+  font-size:.88em;background:var(--panel-2);border:1px solid var(--rule);
+  border-radius:4px;padding:.08em .34em;color:#F2E6BE;white-space:nowrap;
+}
+a{color:var(--cue);text-underline-offset:3px}
+h1,h2,h3{font-family:"Bricolage Grotesque","IBM Plex Sans",sans-serif;font-weight:700;line-height:1.06;margin:0;letter-spacing:-.015em}
+p{margin:0 0 .85em}
+p:last-child{margin-bottom:0}
+
+/* ---------- header ---------- */
+.top{
+  position:sticky;top:0;z-index:40;
+  display:flex;align-items:center;gap:1rem;justify-content:space-between;
+  padding:.7rem var(--shell);
+  background:rgba(14,18,22,.82);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--rule);
+}
+.mark{display:flex;align-items:center;gap:.6rem;font-weight:600;font-size:.92rem}
+.mark b{font-family:"Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
+.mark .dot{width:.62rem;height:.62rem;border-radius:2px;background:var(--cue);flex:0 0 auto}
+.mark span{color:var(--muted);font-weight:400}
+@media (max-width:560px){.mark span{display:none}}
+
+.switch{
+  position:relative;display:flex;padding:3px;gap:2px;
+  background:var(--panel);border:1px solid var(--rule);border-radius:999px;
+}
+.switch button{
+  position:relative;z-index:1;appearance:none;border:0;background:none;cursor:pointer;
+  font:inherit;font-size:.82rem;font-weight:600;letter-spacing:.01em;
+  color:var(--muted);padding:.36rem .9rem;border-radius:999px;
+  transition:color .22s ease;
+}
+.switch button[aria-pressed="true"]{color:#12161A}
+.switch .thumb{
+  position:absolute;z-index:0;top:3px;bottom:3px;left:3px;
+  background:var(--cue);border-radius:999px;
+  transition:transform .28s cubic-bezier(.4,.05,.2,1),width .28s cubic-bezier(.4,.05,.2,1);
+}
+@media (prefers-reduced-motion:reduce){.switch .thumb,.switch button{transition:none}}
+
+/* ---------- layout ---------- */
+main{padding:0 var(--shell) 5rem}
+.wrap{max-width:min(74rem,100%);margin:0 auto}
+section{padding:clamp(2.6rem,6vw,4.4rem) 0;border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+.lede,.body{max-width:var(--col)}
+h2{font-size:clamp(1.5rem,3.4vw,2.15rem);margin-bottom:.9rem}
+h3{font-size:1.05rem;font-weight:600;font-family:"IBM Plex Sans",sans-serif;letter-spacing:0}
+.muted{color:var(--muted)}
+.note{
+  margin-top:1rem;max-width:var(--col);color:var(--muted);font-size:.93rem;
+  border-left:2px solid var(--rule);padding-left:.85rem;
+}
+
+/* ---------- hero ---------- */
+.hero{padding-top:clamp(2.2rem,6vw,4rem)}
+.kicker{color:var(--cue);font-size:.82rem;font-weight:600;margin:0 0 .9rem}
+.hero h1{font-size:clamp(2.3rem,7.2vw,4.6rem);max-width:16ch;margin-bottom:1.6rem}
+.frame{
+  position:relative;aspect-ratio:16/7;max-width:52rem;border-radius:10px;
+  background:
+    radial-gradient(120% 90% at 30% 20%,#233241 0%,#141A20 55%,#0B0F13 100%);
+  border:1px solid var(--rule);overflow:hidden;display:flex;align-items:flex-end;
+  justify-content:center;padding:0 6% 8%;
+}
+.frame::after{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px);
+  pointer-events:none;
+}
+.frame .tc{
+  position:absolute;top:.9rem;left:1rem;font-size:.72rem;color:#7E8C99;
+  letter-spacing:.06em;
+}
+.cue{
+  font-size:clamp(1rem,2.5vw,1.5rem);font-weight:500;text-align:center;line-height:1.35;
+  background:rgba(8,10,12,.72);padding:.35em .7em;border-radius:4px;
+  text-shadow:0 2px 6px rgba(0,0,0,.6);max-width:26ch;
+  opacity:0;transform:translateY(6px);animation:cuein .7s .35s ease forwards;
+}
+@keyframes cuein{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.cue{opacity:1;transform:none;animation:none}}
+.hero .lede{margin-top:1.7rem;font-size:1.05rem;color:var(--muted)}
+
+/* ---------- flow ---------- */
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:.55rem;margin-top:1.8rem}
+.flow .node{
+  flex:1 1 12rem;background:var(--panel);border:1px solid var(--rule);
+  border-radius:8px;padding:.75rem .9rem;
+}
+.flow .node .f{font-size:.86rem;color:var(--text)}
+.flow .node .n{font-size:.74rem;color:var(--muted);margin-top:.15rem}
+.flow .link{align-self:center;color:var(--rule);flex:0 0 auto;width:1.4rem;height:1px;background:var(--rule)}
+@media (max-width:620px){.flow{flex-direction:column}.flow .link{width:1px;height:1rem;margin-left:1.2rem}}
+
+/* ---------- toc ---------- */
+.toc{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:2.2rem}
+.toc a{
+  font-size:.82rem;color:var(--muted);text-decoration:none;
+  border:1px solid var(--rule);border-radius:999px;padding:.28rem .75rem;
+  transition:border-color .18s,color .18s;
+}
+.toc a:hover,.toc a:focus-visible{color:var(--text);border-color:var(--muted)}
+
+/* ---------- steps (cue blocks) ---------- */
+.step{display:grid;grid-template-columns:7.5rem 1fr;gap:0 1.6rem;padding:1.8rem 0;border-top:1px solid var(--rule)}
+.step:first-of-type{border-top:0;padding-top:.4rem}
+.gutter{position:sticky;top:4.6rem;align-self:start}
+.gutter .n{
+  font-family:"Bricolage Grotesque",sans-serif;font-size:2.6rem;font-weight:700;
+  color:var(--cue);line-height:1;letter-spacing:-.04em;
+}
+.gutter .t{font-size:.75rem;color:var(--muted);margin-top:.3rem;letter-spacing:.02em}
+.step h3{font-size:clamp(1.15rem,2.4vw,1.4rem);font-family:"Bricolage Grotesque",sans-serif;font-weight:700;margin-bottom:.7rem;letter-spacing:-.01em}
+@media (max-width:700px){
+  .step{grid-template-columns:1fr;gap:.5rem}
+  .gutter{position:static;display:flex;align-items:baseline;gap:.7rem}
+  .gutter .n{font-size:1.7rem}.gutter .t{margin-top:0}
+}
+ol.acts{margin:1rem 0 0;padding:0;list-style:none;counter-reset:a;max-width:var(--col)}
+ol.acts li{counter-increment:a;position:relative;padding:.55rem 0 .55rem 2.1rem;border-top:1px solid var(--rule)}
+ol.acts li::before{
+  content:counter(a);position:absolute;left:0;top:.55rem;
+  width:1.4rem;height:1.4rem;border-radius:50%;border:1px solid var(--rule);
+  display:grid;place-items:center;font-size:.72rem;color:var(--muted);
+}
+pre{
+  margin:1.1rem 0 0;max-width:var(--col);overflow-x:auto;
+  background:#0A0E12;border:1px solid var(--rule);border-radius:8px;padding:.85rem 1rem;
+  font-family:"IBM Plex Mono",monospace;font-size:.84rem;line-height:1.7;color:#D7E3EC;
+}
+pre .p{color:var(--cue);user-select:none}
+
+/* ---------- critical /content ---------- */
+.crit{border:1px solid rgba(255,211,77,.4);border-radius:12px;background:linear-gradient(180deg,var(--cue-dim),transparent 60%);padding:clamp(1.2rem,3.5vw,2rem)}
+.crit .flag{
+  display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.04em;
+  background:var(--cue);color:#12161A;border-radius:4px;padding:.15rem .5rem;margin-bottom:.9rem;
+}
+.crit h2{color:var(--cue)}
+.split{display:grid;grid-template-columns:minmax(0,17rem) minmax(0,1fr);gap:1.5rem;margin-top:1.6rem;align-items:start}
+@media (max-width:760px){.split{grid-template-columns:1fr}}
+.tree{background:#0A0E12;border:1px solid var(--rule);border-radius:8px;padding:1rem;font-family:"IBM Plex Mono",monospace;font-size:.83rem;line-height:1.9}
+.tree .l{color:#68747F;white-space:nowrap}
+.tree .l.hit{color:#12161A;background:var(--cue);border-radius:3px;padding:0 .35rem;font-weight:500}
+.tree .l.file{color:var(--ok)}
+.tree .root{color:var(--muted)}
+.verdicts{display:flex;flex-direction:column;gap:.6rem}
+.v{display:grid;grid-template-columns:1.5rem 1fr;gap:.7rem;padding:.7rem .85rem;border:1px solid var(--rule);border-radius:8px;background:var(--panel)}
+.v .s{font-weight:700;line-height:1.3}
+.v.yes{border-color:rgba(123,212,168,.45)}
+.v.yes .s{color:var(--ok)}
+.v.no .s{color:#F58A7C}
+.v .p{font-size:.86rem;color:var(--muted)}
+.v .p b{color:var(--text);font-weight:600;font-family:"IBM Plex Mono",monospace;font-size:.92em}
+
+/* ---------- explainers ---------- */
+.cards{display:grid;gap:.55rem;max-width:56rem;margin-top:1.6rem}
+details.card{
+  background:var(--panel);border:1px solid var(--rule);border-radius:10px;
+  overflow:hidden;transition:border-color .2s ease,background .2s ease;
+}
+details.card[open]{border-color:#3D4A56;background:var(--panel-2)}
+details.card:hover{border-color:#3D4A56}
+summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:.9rem;
+  padding:.95rem 1.05rem;font-weight:500;
+}
+summary::-webkit-details-marker{display:none}
+summary:focus-visible{outline:2px solid var(--cue);outline-offset:-2px;border-radius:10px}
+.chev{
+  flex:0 0 auto;width:.95rem;height:.95rem;border-right:1.5px solid var(--cue);border-bottom:1.5px solid var(--cue);
+  transform:rotate(45deg) translate(-2px,-2px);transition:transform .25s ease;
+}
+details[open] .chev{transform:rotate(225deg) translate(-2px,-2px)}
+@media (prefers-reduced-motion:reduce){.chev{transition:none}}
+.card .ans{padding:0 1.05rem 1.1rem 2.9rem;color:var(--muted);max-width:66ch}
+.card .ans p:first-child{margin-top:-.15rem}
+
+/* ---------- tables ---------- */
+.tbl{width:100%;margin-top:1.3rem;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:30rem}
+th{
+  text-align:left;font-weight:600;font-size:.78rem;color:var(--muted);
+  padding:0 1rem .55rem 0;border-bottom:1px solid var(--rule);letter-spacing:.02em;
+}
+td{padding:.7rem 1rem .7rem 0;border-bottom:1px solid var(--rule);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{color:var(--text);font-weight:500}
+table.cells td:first-child{color:var(--cue);font-family:"IBM Plex Mono",monospace;width:3rem}
+table.knobs td:first-child{color:var(--cue);font-family:"IBM Plex Mono",monospace;width:15rem;font-size:.86rem}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--rule);padding:2.2rem var(--shell) 3rem;color:var(--muted);font-size:.85rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:.8rem 2rem;justify-content:space-between}
+footer p{max-width:46ch}
+:focus-visible{outline:2px solid var(--cue);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="mark"><i class="dot"></i><b>colab-legends</b></div>
+  <div class="switch" role="group" id="switch">
+    <i class="thumb" id="thumb"></i>
+    <button type="button" data-set="pt" aria-pressed="true">Português</button>
+    <button type="button" data-set="en" aria-pressed="false">English</button>
+  </div>
+</header>
+
+<main id="app" class="wrap"></main>
+
+<footer><div class="wrap" id="foot"></div></footer>
+
+<script>
+const DECKS = {pt:/*DECK_PT*/{
+  "langLabel": "Português",
+  "hero": {
+    "kicker": "do seu MP4 até o .srt",
+    "title": "Legendas PT-BR em 3 passos",
+    "cue": "O vídeo nunca sai do seu PC. Só o áudio sobe.",
+    "lede": "Esta página ensina, do zero, a transformar um vídeo em um arquivo de legendas em português. É feita para quem nunca programou: cada tela, cada botão e cada palavra estranha vêm explicados antes de você precisar clicar.",
+    "flow": ["seu_video.mp4", "seu_video.mp3", "seu_video.srt"],
+    "flowNotes": ["no seu PC", "sobe ao Colab", "baixa do Colab"]
+  },
+  "tocLabel": "Nesta página",
+  "setup": {
+    "eyebrow": "uma vez só",
+    "title": "Antes da primeira vez",
+    "body": [
+      "Só existe uma preparação, e ela é feita uma única vez no seu computador. Abra a pasta `colab-legends` no Explorador de Arquivos, clique com o botão direito num espaço vazio e escolha Abrir no Terminal — isso abre o PowerShell já dentro da pasta certa.",
+      "Cole o comando abaixo e aperte Enter. Ele instala o conversor de áudio que o `CONVERTER.cmd` usa por baixo. Não precisa de mais nada: nem conta paga, nem programa instalado, nem cadastro."
+    ],
+    "code": "python3 -m pip install imageio-ffmpeg",
+    "note": "Se o comando terminar sem mensagem vermelha, deu certo — pode fechar o PowerShell e nunca mais repetir esse passo."
+  },
+  "steps": [
+    {
+      "n": "1",
+      "time": "1 min",
+      "title": "Converta o vídeo em áudio, no seu PC",
+      "body": [
+        "O primeiro passo acontece inteiramente na sua máquina: o programa abre o vídeo, tira só a faixa de voz e grava um arquivo `.mp3` do lado do vídeo. O vídeo original fica intacto e nunca sai daqui.",
+        "O `.mp3` sai bem menor que o vídeo de propósito. É só voz, gravada em mono, 16 kHz e 64 kbps — exatamente o formato que o modelo de transcrição usa por dentro. Um vídeo de 1 hora vira um `.mp3` de mais ou menos 30 MB."
+      ],
+      "list": [
+        "Copie o seu vídeo para a pasta `colab-legends`.",
+        "Dê um duplo clique em `CONVERTER.cmd`.",
+        "Espere a janela preta fechar: aparece um `seu_video.mp3` do lado do vídeo."
+      ],
+      "code": null,
+      "note": "Também dá para arrastar o vídeo em cima do `CONVERTER.cmd`, sem copiar antes. O duplo clique converte todos os vídeos da pasta de uma vez e pula os que já têm `.mp3`. Formatos aceitos: `.mp4`, `.mkv`, `.mov`, `.avi`, `.webm`, `.m4v`."
+    },
+    {
+      "n": "2",
+      "time": "2 min",
+      "title": "Abra o notebook no Colab e suba o `.mp3`",
+      "body": [
+        "Agora entra o Google Colab: um site onde você roda um programa pronto num computador que o Google te empresta de graça. Você não instala nada — o programa já vem escrito no arquivo `transcrever_ptbr_colab.ipynb` que está nesta pasta.",
+        "Depois de abrir o notebook, você precisa entregar o `.mp3` para essa máquina emprestada. Isso é feito no painel Arquivos, o ícone de pasta na barra esquerda da tela. Onde o arquivo cai importa muito — o passo 2.1 logo abaixo explica o porquê."
+      ],
+      "list": [
+        "Abra colab.research.google.com e faça login com sua conta Google.",
+        "Clique em Fazer upload de notebook e escolha o arquivo `transcrever_ptbr_colab.ipynb`.",
+        "Clique no ícone de pasta na barra esquerda para abrir o painel Arquivos.",
+        "Arraste o `.mp3` para a lista que já está aberta — a pasta `content`.",
+        "Espere a bolinha de progresso fechar o círculo e o nome do arquivo aparecer na lista."
+      ],
+      "code": null,
+      "note": "Se aparecer o aviso de que você está conectado a uma GPU mas não está usando, feche e ignore. Aceitar a troca reinicia o ambiente e apaga o `.mp3` que você acabou de subir."
+    },
+    {
+      "n": "3",
+      "time": "22 s a 12 min",
+      "title": "Rode com Executar tudo e espere",
+      "body": [
+        "No menu de cima, vá em Ambiente de execução e clique em Executar tudo. Isso manda o Colab rodar as cinco partes do notebook em ordem, sem você precisar clicar em cada uma.",
+        "A célula 3 vai mostrando o texto reconhecido junto com a porcentagem do progresso, então dá para acompanhar. O notebook já pede a GPU T4 sozinho, então não é preciso mexer em nenhum menu de configuração."
+      ],
+      "list": [
+        "Menu Ambiente de execução, depois Executar tudo.",
+        "Acompanhe as frases aparecendo na célula 3 com a porcentagem.",
+        "Se a célula 3 parar avisando SEM GPU, ligue na mão: Ambiente de execução, Alterar o tipo de ambiente de execução, T4 GPU, Salvar — e rode Executar tudo de novo."
+      ],
+      "code": null,
+      "note": "A primeira execução gasta cerca de 2 minutos a mais, baixando o modelo `large-v3` (~3 GB) dentro do Colab. Nas seguintes esse tempo não se repete enquanto a sessão estiver viva."
+    },
+    {
+      "n": "4",
+      "time": "1 min",
+      "title": "Pegue o `.srt` e use no player",
+      "body": [
+        "Quando terminar, a última célula mostra o começo das legendas na tela e o navegador baixa o arquivo `.srt` sozinho, direto para a sua pasta de downloads.",
+        "Com o arquivo na mão, é só entregá-lo ao player. O jeito mais simples é arrastar o `.srt` para dentro do VLC com o vídeo já tocando."
+      ],
+      "list": [
+        "Confira o começo das legendas impresso pela célula 5.",
+        "Se o download não começar sozinho, clique com o botão direito no `.srt` dentro do painel Arquivos e escolha Fazer download.",
+        "Arraste o `.srt` para dentro do VLC, ou deixe-o com o mesmo nome do vídeo e na mesma pasta."
+      ],
+      "code": null,
+      "note": "Com o mesmo nome do vídeo e na mesma pasta, praticamente qualquer player carrega a legenda sozinho, sem você precisar apontar nada."
+    }
+  ],
+  "critical": {
+    "flag": "o erro número 1",
+    "title": "O `.mp3` tem que cair dentro da pasta `content`",
+    "body": [
+      "O painel Arquivos mostra o disco inteiro do computador virtual que o Google te emprestou. Quando o painel carrega, ele já está aberto dentro de uma pasta chamada `content` — essa é a pasta de trabalho, e é a única que o notebook olha.",
+      "A busca que o notebook faz não é recursiva: ela lista apenas os `.mp3` soltos no primeiro nível de `content` e ignora qualquer subpasta. Se o arquivo cair em outro lugar, a célula 2 não acha nada, cai no widget antigo de upload (aquele que trava com arquivo grande) e tudo parece quebrado — mas não está."
+    ],
+    "right": {
+      "label": "o lugar certo",
+      "path": "/content",
+      "text": "É a lista que já aparece quando o painel Arquivos abre, na mesma altura de `sample_data` — arraste o `.mp3` para o meio dela e confira o caminho com Copiar caminho: tem que ser `/content/seu_video.mp3`."
+    },
+    "wrong": [
+      {
+        "path": "/",
+        "text": "É a raiz do Linux da máquina virtual, com `bin`, `boot`, `dev`, `etc`, `usr` e `lib`: o notebook não procura ali, e essas pastas de sistema não devem ser mexidas — se você clicou na setinha para cima, saiu de `content`."
+      },
+      {
+        "path": "/content/sample_data",
+        "text": "É uma subpasta de exemplo que o Colab cria sozinho e, mesmo estando dentro de `content`, a busca não entra em subpastas — vale para qualquer pasta que você mesmo criar."
+      },
+      {
+        "path": "/content/drive/MyDrive",
+        "text": "É o seu Google Drive montado, um caminho diferente do primeiro nível de `content`, e o notebook não procura o `.mp3` no Drive."
+      }
+    ],
+    "note": "A pasta `content` vive nessa máquina emprestada, e não na sua conta: se o ambiente do Colab desconectar ou reiniciar, tudo o que estava lá some — inclusive o `.mp3` — e você precisa subir o arquivo de novo e rodar Executar tudo outra vez."
+  },
+  "timing": {
+    "title": "Quanto tempo demora",
+    "head": ["Vídeo", "MP3 gerado", "Transcrição no Colab (T4)"],
+    "rows": [
+      ["45 s", "0,4 MB", "~4 s"],
+      ["5 min", "2,4 MB", "~22 s"],
+      ["1 hora", "~30 MB", "~4 a 6 min"],
+      ["2 horas", "~57 MB", "~8 a 12 min"]
+    ],
+    "note": "A primeira execução gasta ~2 min extras baixando o modelo `large-v3` (~3 GB) dentro do Colab."
+  },
+  "trouble": {
+    "title": "Se der problema",
+    "head": ["O que aconteceu", "O que fazer"],
+    "rows": [
+      ["`CONVERTER.cmd` abre e fecha na hora", "Falta o `python3` no PATH. Rode `python3 --version` no PowerShell."],
+      ["`ffmpeg nao encontrado`", "Rode `python3 -m pip install imageio-ffmpeg`."],
+      ["`FALHOU (arquivo sem audio ou corrompido)`", "O arquivo não tem faixa de áudio (ou está quebrado). Os outros vídeos da pasta continuam sendo convertidos."],
+      ["Notebook para dizendo SEM GPU", "A GPU grátis acabou por hoje ou não foi ligada. Ligue a T4 (passo 3) e rode Executar tudo de novo, ou tente mais tarde."],
+      ["Aviso de que você está conectado a uma GPU mas não está usando", "Feche e ignore. Aceitar a troca reinicia o ambiente e apaga o `.mp3` que você subiu."],
+      ["A célula 2 pediu upload em vez de achar o arquivo", "O `.mp3` não terminou de subir no painel Arquivos. Espere e rode a célula de novo."],
+      ["O `.mp3` foi parar na pasta errada", "O notebook só enxerga `.mp3` soltos dentro de `content` — não entra em `sample_data/`, nem em subpastas, nem na raiz `/`, nem no Drive. Arraste o arquivo para a lista que abre por padrão no painel Arquivos e confira com Copiar caminho: tem que ser `/content/seu_video.mp3`. Depois rode a célula 2 de novo."],
+      ["O painel Arquivos ficou vazio e o `.mp3` sumiu", "O ambiente do Colab reiniciou ou desconectou, e isso apaga tudo o que estava em `/content`. Suba o `.mp3` de novo e rode Ambiente de execução, Executar tudo. Para não repetir, nunca aceite o aviso de GPU não usada."],
+      ["A célula 2 pegou o mp3 errado", "Tem mais de um `.mp3` no Colab. Apague os outros no painel Arquivos."],
+      ["O `.srt` não baixou sozinho", "Painel Arquivos, botão direito no `.srt`, Fazer download."],
+      ["O Colab desconectou no meio", "A sessão grátis cai sozinha se ficar ociosa (o tempo exato não é publicado) e dura no máximo 12 h. Reabra, suba o mp3, Executar tudo."]
+    ]
+  },
+  "files": {
+    "title": "O que tem nesta pasta",
+    "head": ["Arquivo", "Para quê"],
+    "rows": [
+      ["`CONVERTER.cmd`", "O botão. Duplo clique ou arraste o vídeo em cima."],
+      ["`mp4_para_mp3.py`", "O script que o `.cmd` chama (dá para rodar direto no PowerShell também)."],
+      ["`transcrever_ptbr_colab.ipynb`", "O notebook que roda no Colab."],
+      ["`exemplo/`", "Vídeo de teste + o `.mp3` e o `.srt` que ele gerou, para comparação."]
+    ]
+  },
+  "inside": {
+    "title": "Como as legendas são montadas",
+    "body": [
+      "Um notebook é uma sequência de blocos de código chamados células, que rodam de cima para baixo. Executar tudo roda as cinco na ordem, e cada uma entrega o resultado para a seguinte."
+    ],
+    "cells": [
+      ["1", "Confere a GPU e instala `faster-whisper`"],
+      ["2", "Encontra (ou recebe) o `.mp3`"],
+      ["3", "`large-v3`, `language=\"pt\"`, VAD ligado, timestamps por palavra, escada de tentativas até `1.0` — o `.mp3` vai direto para o modelo"],
+      ["4", "Monta as legendas: máx. 2 linhas de 40 caracteres, entre 0,7 s e 6 s cada, legenda 1 em `00:00:00,000`"],
+      ["5", "Mostra o começo do `.srt` e dispara o download"]
+    ],
+    "knobs": {
+      "title": "O que cada ajuste faz",
+      "hint": "O notebook chega pronto: nada aqui precisa ser mexido para funcionar. Esta lista existe para o dia em que você quiser entender por que a legenda saiu de um jeito e não de outro. Três ajustes marcados como novos entraram depois de uma revisão do código do faster-whisper.",
+      "groups": [
+        {
+          "title": "Célula 3 — como o áudio vira texto",
+          "note": "Estes valores mexem na qualidade da transcrição, não na aparência da legenda. Estão travados de propósito: cada um está ali por um motivo que já custou um erro no passado.",
+          "items": [
+            [
+              "large-v3",
+              "O modelo em si — a versão grande do Whisper, a mais precisa disponível para português. Ocupa cerca de 3 GB na placa de vídeo. Existe uma versão `turbo`, mais rápida, mas ela erra o horário das palavras, e é disso que a célula 4 vive."
+            ],
+            [
+              "compute_type=\"float16\"",
+              "A precisão das contas. Cada número do modelo é guardado em 16 bits, que é o formato nativo da placa T4: qualidade cheia. Existe o `int8`, que ocupa metade e roda mais rápido, mas arredonda os números — e aqui sobra memória, então não há o que ganhar com essa troca."
+            ],
+            [
+              "language=\"pt\"",
+              "Trava o idioma em português. Sem isso o modelo tenta adivinhar a língua a cada trecho e pode escorregar para o espanhol num pedaço de áudio ruim."
+            ],
+            [
+              "beam_size=5",
+              "Quantas versões da mesma frase o modelo mantém em aberto antes de escolher a melhor. Cinco é o valor com que ele foi treinado; subir custa muito tempo e melhora quase nada."
+            ],
+            [
+              "word_timestamps=True",
+              "Pede o horário de cada palavra, e não só o de cada frase. É a matéria-prima da célula 4: sem isso não dá para montar legenda curta nem quebrar exatamente na pausa."
+            ],
+            [
+              "condition_on_previous_text=False",
+              "Impede o modelo de ler o que ele mesmo acabou de escrever. Parece perda de contexto, mas é a melhor trava contra o defeito clássico do Whisper: entrar em loop e repetir a mesma frase até o fim do arquivo."
+            ],
+            [
+              "temperature=[0.0 ... 1.0]",
+              "Novo nesta versão. É uma escada de tentativas. O modelo começa no degrau `0.0`, o mais cauteloso. Se o texto sair suspeito — repetição, frase sem sentido — ele sobe um degrau e tenta de novo com um pouco mais de liberdade. A escada precisa terminar em `1.0`: quando os degraus acabam e o trecho ainda está ruim, o programa aceita o menos pior, e aí o defeito entra na legenda. Os degraus extras não custam nada nos trechos que dão certo de primeira, porque nem chegam a rodar."
+            ],
+            [
+              "vad_filter=True",
+              "Liga o detector de voz, o VAD. Antes de transcrever, um programa separado marca onde tem alguém falando e recorta os silêncios. Menos silêncio entregue ao modelo significa menos chance de ele inventar frase do nada."
+            ],
+            [
+              "threshold=0.5",
+              "Novo nesta versão (era o padrão invisível, agora está escrito). É o quanto o detector precisa ter certeza para chamar um trecho de fala. Se sumirem frases ditas bem baixinho, baixe para `0.35`."
+            ],
+            [
+              "min_silence_duration_ms=2000",
+              "Novo nesta versão — estava em 0,5 s e passou para 2 s. É o tamanho que um silêncio precisa ter para o detector cortar o áudio ali. O motivo da mudança é sutil: quando dois trechos de fala ficam perto demais, o detector cola os dois e a pausa entre eles desaparece do áudio — justamente as pausas de 0,5 a 1,5 s que a célula 4 usa para saber onde começar uma legenda nova."
+            ],
+            [
+              "speech_pad_ms=400",
+              "Uma folga de 0,4 s antes e depois de cada trecho de fala, para o corte não comer o começo da palavra. Não abaixe: com 0,2 s o modelo perdia a primeira palavra de cada frase."
+            ]
+          ]
+        },
+        {
+          "title": "Célula 4 — como o texto vira legenda na tela",
+          "note": "Para mudar o visual das legendas, mexa só nestes valores, que ficam no topo da célula 4. Eles não alteram uma vírgula do que foi transcrito: só decidem como aquele texto é fatiado na tela.",
+          "items": [
+            [
+              "MAX_CHARS = 40",
+              "Máximo de caracteres em uma linha de legenda."
+            ],
+            [
+              "MAX_LINHAS = 2",
+              "Máximo de linhas por legenda. Duas é o padrão dos serviços de streaming; três já tampa imagem demais."
+            ],
+            [
+              "MAX_DUR = 6.0",
+              "Tempo máximo, em segundos, que uma legenda fica parada na tela."
+            ],
+            [
+              "MIN_DUR = 0.7",
+              "Tempo mínimo, para nenhuma legenda piscar rápido demais para ser lida."
+            ],
+            [
+              "GAP_QUEBRA = 0.7",
+              "Silêncio entre duas palavras que força começar uma legenda nova. É o que faz a legenda respeitar a respiração de quem fala."
+            ],
+            [
+              "ESPERA_ANCORA = 6.0",
+              "Até quantos segundos a primeira fala pode demorar para que a legenda 1 ainda seja puxada para `00:00:00,000`."
+            ]
+          ]
+        }
+      ]
+    },
+    "anchor": [
+      "A legenda 1 começa em `00:00:00,000` para o arquivo nunca abrir com um vazio.",
+      "A exceção é quando o vídeo começa com vinheta ou música longa: aí a legenda 1 esperaria mais de `ESPERA_ANCORA` segundos (6 s) até alguém falar, ficaria 20 s parada na tela e adiantaria a fala. Nesse caso ela espera a fala começar de verdade — é o que acontece no vídeo de `exemplo/`, que abre com 14 s de vinheta."
+    ]
+  },
+  "cli": {
+    "title": "Pela linha de comando",
+    "body": "Se você preferir o PowerShell ao duplo clique, o mesmo conversor roda direto por comando, apontando para um arquivo, uma pasta inteira ou a pasta atual.",
+    "code": "python3 mp4_para_mp3.py meu_video.mp4\npython3 mp4_para_mp3.py C:\\videos\npython3 mp4_para_mp3.py"
+  },
+  "explainers": {
+    "title": "O que está acontecendo por trás",
+    "hint": "Clique em qualquer pergunta para abrir a resposta.",
+    "items": [
+      {
+        "q": "O que é o Google Colab?",
+        "a": [
+          "O Colab é um site do Google onde você abre um notebook — um documento que mistura texto explicativo com blocos de código prontos — e roda esse código num computador do Google, na nuvem, de graça. Você não instala nada na sua máquina: tudo acontece dentro da aba do navegador.",
+          "Esse computador é emprestado e temporário. Ele existe enquanto a sua sessão estiver aberta e ativa; a sessão grátis cai sozinha se ficar ociosa e dura no máximo 12 horas. Quando ela acaba, a máquina é devolvida e tudo o que estava nela é apagado."
+        ]
+      },
+      {
+        "q": "O que é a GPU T4?",
+        "a": [
+          "GPU é a placa de vídeo do computador. Além de desenhar imagens, ela faz milhares de contas ao mesmo tempo — e é exatamente disso que um modelo de transcrição precisa. A T4 é o modelo de GPU que o Colab empresta na conta grátis, e é ela que faz um vídeo de 1 hora ser transcrito em cerca de 4 a 6 minutos, em vez de horas num processador comum.",
+          "Como é de graça, há um limite diário de uso que pode acabar. Quando isso acontece, o notebook para na célula 3 avisando SEM GPU: aí é ligar a T4 na mão pelo menu Ambiente de execução, Alterar o tipo de ambiente de execução, ou simplesmente tentar de novo mais tarde."
+        ]
+      },
+      {
+        "q": "Como o mp3 vira legenda?",
+        "a": [
+          "O `.mp3` é entregue ao `faster-whisper` rodando o modelo `large-v3`, travado em português. O modelo escuta o áudio e devolve trechos de fala, cada um com o horário de início e de fim — e, porque o notebook pede timestamps por palavra, o horário de cada palavra individual também."
+        ,
+          "Depois disso a célula 4 faz o trabalho de legendista: junta as palavras em blocos que caibam na tela (no máximo 2 linhas de 40 caracteres), quebra quando alguém faz uma pausa, ajusta cada bloco para durar entre 0,7 s e 6 s, garante que uma legenda não invada o tempo da outra e grava tudo no formato `.srt`."
+        ]
+      },
+      {
+        "q": "Por que só o áudio sobe?",
+        "a": [
+          "Por privacidade, antes de tudo: o vídeo em si nunca sai do seu computador, e é isso que o projeto promete. O que sobe é apenas a faixa de voz, sem nenhuma imagem — ninguém na nuvem vê um único quadro do que você gravou.",
+          "E também por tamanho: o áudio é gravado em mono, 16 kHz e 64 kbps, que é exatamente o formato que o Whisper usa por dentro. Isso deixa 1 hora de conteúdo em cerca de 30 MB — um upload rápido, sem perder nada da qualidade da transcrição, porque o modelo reduziria o áudio para esse mesmo formato de qualquer jeito."
+        ]
+      },
+      {
+        "q": "O que é um arquivo `.srt`?",
+        "a": [
+          "É um arquivo de texto puro, que você pode abrir no Bloco de Notas. Cada legenda ocupa um bloco de três partes: um número de ordem, uma linha com o horário em que a legenda entra e sai da tela, e o texto em si — aqui, no máximo 2 linhas de 40 caracteres.",
+          "Como é só texto seguindo um padrão antigo e universal, praticamente todo player entende: VLC, YouTube, players de TV. Basta arrastar o `.srt` para dentro do player, ou deixá-lo com o mesmo nome do vídeo e na mesma pasta, que ele carrega sozinho."
+        ]
+      },
+      {
+        "q": "O que faz o Executar tudo?",
+        "a": [
+          "Cada célula é uma etapa separada, e elas passam o resultado adiante em ordem: a célula 2 descobre qual é o `.mp3` e guarda esse nome; a 3 usa esse nome para transcrever e guarda os trechos de fala; a 4 usa esses trechos para montar as legendas e guarda o caminho do `.srt`; a 5 usa esse caminho para mostrar e baixar o arquivo.",
+          "Por isso Executar tudo, no menu Ambiente de execução, é o jeito certo de rodar: ele executa as cinco na ordem, sem pular nenhuma. Rodar uma célula sozinha e fora de ordem faz o notebook reclamar de um nome que ainda não existe — o que parece um erro do programa, mas é só a etapa anterior faltando."
+        ]
+      },
+      {
+        "q": "O que é a pasta `/content`?",
+        "a": [
+          "É a pasta de trabalho daquele computador temporário na nuvem — a única que o notebook procura, e a que já está aberta quando o painel Arquivos carrega. O `.mp3` precisa ficar solto dentro dela, porque a busca não entra em subpastas.",
+          "Ela é apagada por completo quando o ambiente reinicia ou desconecta, então é normal ter que subir o arquivo de novo depois disso. As pastas vizinhas que aparecem na raiz `/` — `bin`, `boot`, `dev`, `etc`, `usr`, `lib` — são o sistema Linux dessa máquina virtual: não servem para guardar o seu áudio e não devem ser mexidas."
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "tested": "Testado de ponta a ponta em 05/09/2026 numa Tesla T4 com `faster-whisper 1.2.1` e `ctranslate2 4.8.2`: o vídeo de 5 min 5 s de `exemplo/` virou 54 legendas em 22 s (primeira em `00:00:14,380`, porque abre com vinheta) e um segundo vídeo de 45 s virou 10 legendas em 4 s, com os dois `.srt` baixando sozinhos pelo navegador.",
+    "credit": "Vídeos de exemplo do Senado Federal / TV Senado, via Wikimedia Commons, licença CC BY 3.0 (o do `exemplo/` foi reencodado para MP4 apenas para servir de teste)."
+  }
+}/*END_PT*/, en:/*DECK_EN*/{
+  "langLabel": "English",
+  "hero": {
+    "kicker": "Free GPU, your video stays home",
+    "title": "Portuguese subtitles in three steps",
+    "cue": "Your video never leaves your PC.",
+    "lede": "This is the full walkthrough for turning any video into a Portuguese subtitle file, written for someone who has never opened a code editor. Every click is spelled out, including the one small mistake that makes people believe the tool is broken.",
+    "flow": ["your_video.mp4", "your_video.mp3", "your_video.srt"],
+    "flowNotes": ["stays on PC", "uploaded to Colab", "downloaded back home"]
+  },
+  "tocLabel": "Contents",
+  "setup": {
+    "eyebrow": "one time only",
+    "title": "Install the audio converter",
+    "body": [
+      "Your PC needs one small helper to pull the sound out of a video file. It is called `imageio-ffmpeg`: a self-contained audio converter that installs itself inside Python. Nothing else is needed, no paid account and no program to install by hand.",
+      "Open PowerShell (the Windows window where you type commands) inside the `colab-legends` folder and run the line below. It takes under a minute, and you never have to do it again."
+    ],
+    "code": "python3 -m pip install imageio-ffmpeg",
+    "note": "If Windows says the command was not found, Python itself is missing from your PATH. Check it with `python3 --version` before anything else."
+  },
+  "steps": [
+    {
+      "n": "1",
+      "time": "a few minutes",
+      "title": "Turn the video into an MP3 on your PC",
+      "body": [
+        "A video file is enormous, and the transcription model never looks at the picture. So the first step strips out only the sound and saves it as an `.mp3` right next to your video. That is exactly why the video itself never travels anywhere.",
+        "`CONVERTER.cmd` is the button. Double-clicking it converts every video sitting in the `colab-legends` folder at once, and silently skips any video that already has an `.mp3` beside it, so running it a second time costs nothing."
+      ],
+      "list": [
+        "Copy your video into the `colab-legends` folder.",
+        "Double-click `CONVERTER.cmd` and wait for the black window to finish.",
+        "Check that a file with the same name, ending in `.mp3`, appeared next to the video."
+      ],
+      "code": null,
+      "note": "You can also drag a video straight onto `CONVERTER.cmd`, which works the same way without copying anything first. Accepted formats: `.mp4`, `.mkv`, `.mov`, `.avi`, `.webm`, `.m4v`."
+    },
+    {
+      "n": "2",
+      "time": "2 to 5 min",
+      "title": "Open the notebook in Colab and upload the MP3",
+      "body": [
+        "Google Colab is a free website that runs Python code on Google's own machines, including a graphics card (GPU) that would otherwise cost real money to rent. A notebook (a `.ipynb` file) is a document made of code blocks called cells, which you run from top to bottom.",
+        "Two things go up to Colab, by two different routes: the notebook, through the upload dialog on the front page, and your `.mp3`, through the Arquivos (Files) side panel. Only the audio is ever uploaded."
+      ],
+      "list": [
+        "Go to `https://colab.research.google.com` and click Fazer upload de notebook (Upload notebook).",
+        "Pick `transcrever_ptbr_colab.ipynb` from your `colab-legends` folder.",
+        "Click the folder icon on the left edge of the screen to open the Arquivos (Files) panel.",
+        "Drag your `.mp3` into that file list, into the folder named `content`, which is the folder already open when the panel loads.",
+        "Wait for the small progress circle on the file to disappear before touching anything else."
+      ],
+      "code": null,
+      "note": "The notebook already asks for the T4 GPU by itself, so you do not need to touch the runtime menu. Read the next section before you drag the file: where it lands decides whether any of this works."
+    },
+    {
+      "n": "3",
+      "time": "about 5 min per hour of video",
+      "title": "Run all, then just watch",
+      "body": [
+        "Running the notebook means executing its five cells in order. You start it once from the menu and then you wait, with no further clicking.",
+        "Cell 3 prints each chunk of transcribed speech the moment it is produced, with a percentage in front of it. That scrolling Portuguese text is your progress bar: if it keeps moving, everything is fine."
+      ],
+      "list": [
+        "Menu Ambiente de execução (Runtime) > Executar tudo (Run all).",
+        "If a dialog appears saying you are connected to a GPU but not using it, close it and ignore it. Never accept it.",
+        "Watch cell 3: lines such as `[ 42.0%]` followed by Portuguese text mean the transcription is running."
+      ],
+      "code": null,
+      "note": "If cell 3 stops with SEM GPU (no GPU), switch it on by hand: Ambiente de execução (Runtime) > Alterar o tipo de ambiente de execução (Change runtime type) > T4 GPU > Salvar (Save), then Executar tudo (Run all) again."
+    },
+    {
+      "n": "4",
+      "time": "1 min",
+      "title": "Collect the .srt and load it in your player",
+      "body": [
+        "An `.srt` is a plain text file that lists every subtitle together with the exact second it appears and disappears. Any video player can read it.",
+        "The last cell prints the first few subtitles so you can glance at them, then tells your browser to download the finished file on its own."
+      ],
+      "list": [
+        "Let the last cell finish. The `.srt` normally lands in your Downloads folder by itself.",
+        "If no download starts, right-click the `.srt` in the Arquivos (Files) panel and choose Fazer download (Download).",
+        "Drag that `.srt` onto the playing video in VLC, or keep it beside the video file."
+      ],
+      "code": null,
+      "note": "Same name, same folder is the trick: `my_video.mp4` next to `my_video.srt`, and almost every player loads the subtitles without being asked."
+    }
+  ],
+  "critical": {
+    "flag": "mistake number one",
+    "title": "The MP3 must land inside /content, nowhere else",
+    "body": [
+      "Cell 2 hunts for your audio with a single instruction: `sorted(Path(\"/content\").glob(\"*.mp3\"))`. In plain English, it lists the `.mp3` files sitting directly inside the folder named `content`, and only there. It does not look inside subfolders, and it does not search the rest of the machine.",
+      "When it finds nothing, it does not complain. It quietly falls back to the old `files.upload()` widget, which stalls on large files and looks frozen for minutes. That is the moment people conclude the notebook is broken, when in truth the audio is simply in the wrong folder. `content` is the folder the Arquivos (Files) panel already has open the instant it loads, so the safest move is: open the panel, click nothing, drop the file straight in."
+    ],
+    "right": {
+      "label": "Correct",
+      "path": "/content",
+      "text": "This is the folder the Arquivos (Files) panel opens on by default, and the only place cell 2 ever looks."
+    },
+    "wrong": [
+      {
+        "path": "/",
+        "text": "The root of the virtual machine, holding `bin`, `boot`, `dev`, `etc`, `usr` and `lib`, which are the Linux system folders of Google's temporary computer: cell 2 never looks here, and you should never drop files there or touch those folders at all."
+      },
+      {
+        "path": "/content/sample_data/",
+        "text": "Any subfolder is invisible to cell 2 because the search is not recursive, so an `.mp3` inside `sample_data/` or inside a folder you created yourself counts exactly the same as no file at all."
+      },
+      {
+        "path": "/content/drive/MyDrive/",
+        "text": "A mounted Google Drive path only looks like it is nearby: it is a different folder, so the `.mp3` has to be copied into `/content` itself before cell 2 can find it."
+      }
+    ],
+    "note": "The `/content` folder is temporary: every time the Colab runtime disconnects or restarts, everything you uploaded is erased, so upload the `.mp3` again after any restart, and never accept the dialog offering to switch runtime because that restart wipes your file too."
+  },
+  "timing": {
+    "title": "How long it takes",
+    "head": ["Video", "MP3 produced", "Transcription on Colab (T4)"],
+    "rows": [
+      ["45 s", "0.4 MB", "about 4 s"],
+      ["5 min", "2.4 MB", "about 22 s"],
+      ["1 hour", "about 30 MB", "about 4 to 6 min"],
+      ["2 hours", "about 57 MB", "about 8 to 12 min"]
+    ],
+    "note": "The very first run costs roughly 2 extra minutes while Colab downloads the `large-v3` model, which is about 3 GB."
+  },
+  "trouble": {
+    "title": "If something goes wrong",
+    "head": ["What happened", "What to do"],
+    "rows": [
+      ["`CONVERTER.cmd` opens and closes instantly", "`python3` is missing from your PATH. Run `python3 --version` in PowerShell to confirm."],
+      ["The message `ffmpeg nao encontrado` (ffmpeg not found)", "Run `python3 -m pip install imageio-ffmpeg`."],
+      ["The message `FALHOU (arquivo sem audio ou corrompido)` (failed: no audio track, or corrupted)", "That file has no sound track, or it is damaged. Every other video in the folder keeps converting normally."],
+      ["The notebook stops saying SEM GPU (no GPU)", "The free GPU ran out for today, or it was never switched on. Turn on the T4 as shown in step 3 and run Executar tudo (Run all) again, or try later."],
+      ["The warning você esta conectado a uma GPU mas nao esta usando (you are connected to a GPU but not using it)", "Close it and ignore it. Accepting the swap restarts the runtime and erases the `.mp3` you uploaded."],
+      ["Cell 2 asked you to upload instead of finding the file", "The `.mp3` had not finished uploading in the Arquivos (Files) panel. Wait for the progress circle to finish, then run that cell again."],
+      ["Cell 2 picked the wrong mp3", "There is more than one `.mp3` in Colab. Delete the extra ones in the Arquivos (Files) panel."],
+      ["The `.srt` did not download by itself", "Arquivos (Files) panel, right-click the `.srt`, choose Fazer download (Download)."],
+      ["Colab disconnected halfway through", "The free session drops on its own when left idle (the exact limit is not published) and lasts 12 hours at most. Reopen it, upload the mp3, Executar tudo (Run all)."],
+      ["Cell 2 keeps offering the upload button even though you can see your file in Colab", "The `.mp3` is in the wrong folder. It must sit directly inside `content`, never in `sample_data/`, never in a subfolder you made, never in a Drive path. Drag it into `content` and run cell 2 again."],
+      ["The Arquivos (Files) panel is empty and your `.mp3` has vanished", "The runtime restarted or disconnected, which wipes `/content` completely. Upload the `.mp3` again and run Executar tudo (Run all)."]
+    ]
+  },
+  "files": {
+    "title": "What is in this folder",
+    "head": ["File", "What it is for"],
+    "rows": [
+      ["`CONVERTER.cmd`", "The button. Double-click it, or drag a video onto it."],
+      ["`mp4_para_mp3.py`", "The script the `.cmd` calls. You can run it straight from PowerShell too."],
+      ["`transcrever_ptbr_colab.ipynb`", "The notebook that runs on Colab."],
+      ["`exemplo/`", "A test video plus the `.mp3` and `.srt` it produced, kept for comparison."]
+    ]
+  },
+  "inside": {
+    "title": "How the subtitles are built",
+    "body": [
+      "The notebook is five cells that always run in the same order, each handing its result to the next. You never need to edit them, but knowing what each one does makes any message on screen readable instead of scary."
+    ],
+    "cells": [
+      ["1", "Checks the GPU and installs `faster-whisper`."],
+      ["2", "Finds the `.mp3` already in `/content`, or, failing that, asks you to upload one."],
+      ["3", "`large-v3`, `language=\"pt\"`, VAD on, word-level timestamps, retry ladder up to `1.0`. The `.mp3` goes straight into the model."],
+      ["4", "Builds the subtitles: at most 2 lines of 40 characters, each one between 0.7 s and 6 s, subtitle 1 at `00:00:00,000`."],
+      ["5", "Shows the beginning of the `.srt` and triggers the download."]
+    ],
+    "knobs": {
+      "title": "What each setting does",
+      "hint": "The notebook arrives ready: nothing here has to be touched for it to work. This list is for the day you want to understand why a subtitle came out one way and not another. Three settings marked as new were added after a review of the faster-whisper source.",
+      "groups": [
+        {
+          "title": "Cell 3 — turning audio into text",
+          "note": "These values affect transcription quality, not how the subtitle looks. They are locked on purpose: each one is there because of a mistake it already cost once.",
+          "items": [
+            [
+              "large-v3",
+              "The model itself — the large version of Whisper, the most accurate one available for Portuguese. It takes about 3 GB on the graphics card. There is a faster `turbo` version, but it gets word timings wrong, and word timings are what cell 4 lives on."
+            ],
+            [
+              "compute_type=\"float16\"",
+              "How precisely the numbers are stored. Each model number is kept in 16 bits, the T4 card's native format: full quality. There is `int8`, which is half the size and faster, but it rounds the numbers off — and memory is not scarce here, so there is nothing to gain from that trade."
+            ],
+            [
+              "language=\"pt\"",
+              "Locks the language to Portuguese. Without it the model guesses the language on every window and can slip into Spanish on a noisy stretch."
+            ],
+            [
+              "beam_size=5",
+              "How many versions of the same sentence the model keeps alive before picking the best one. Five is the value it was trained with; going higher costs a lot of time and improves almost nothing."
+            ],
+            [
+              "word_timestamps=True",
+              "Asks for the clock time of every single word, not just of each sentence. This is cell 4's raw material: without it there is no way to build short subtitles or to break exactly on a pause."
+            ],
+            [
+              "condition_on_previous_text=False",
+              "Stops the model from reading back what it just wrote. It looks like a loss of context, but it is the best guard against Whisper's classic failure: falling into a loop and repeating the same sentence until the end of the file."
+            ],
+            [
+              "temperature=[0.0 ... 1.0]",
+              "New in this version. It is a ladder of retries. The model starts at rung `0.0`, the most cautious one. If the text comes out suspicious — repetition, nonsense — it climbs a rung and tries again with a little more freedom. The ladder has to end at `1.0`: when the rungs run out and the stretch is still bad, the program accepts the least bad attempt, and the defect lands in the subtitle. The extra rungs cost nothing on stretches that work on the first try, because they never run."
+            ],
+            [
+              "vad_filter=True",
+              "Turns on the voice detector, the VAD. Before transcribing, a separate program marks where someone is actually speaking and cuts the silences out. Less silence handed to the model means less chance of it inventing a sentence out of nothing."
+            ],
+            [
+              "threshold=0.5",
+              "New in this version (it was the invisible default, now it is written down). It is how sure the detector has to be before calling a stretch speech. If sentences spoken very quietly go missing, lower it to `0.35`."
+            ],
+            [
+              "min_silence_duration_ms=2000",
+              "New in this version — it was 0.5 s and became 2 s. It is how long a silence has to be for the detector to cut the audio there. The reason is subtle: when two speech stretches sit too close together, the detector glues them into one and the pause between them disappears from the audio — exactly the 0.5 to 1.5 s pauses cell 4 uses to decide where a new subtitle starts."
+            ],
+            [
+              "speech_pad_ms=400",
+              "A 0.4 s margin before and after each speech stretch, so the cut does not eat the start of a word. Do not lower it: at 0.2 s the model was losing the first word of every sentence."
+            ]
+          ]
+        },
+        {
+          "title": "Cell 4 — turning text into subtitles on screen",
+          "note": "To change how the subtitles look, touch only these values, which sit at the top of cell 4. They do not alter a single comma of what was transcribed: they only decide how that text is sliced on screen.",
+          "items": [
+            [
+              "MAX_CHARS = 40",
+              "Maximum number of characters on one subtitle line."
+            ],
+            [
+              "MAX_LINHAS = 2",
+              "Maximum lines per subtitle. Two is the streaming standard; three covers too much of the picture."
+            ],
+            [
+              "MAX_DUR = 6.0",
+              "The longest a single subtitle stays on screen, in seconds."
+            ],
+            [
+              "MIN_DUR = 0.7",
+              "The shortest, so no subtitle flashes by too fast to read."
+            ],
+            [
+              "GAP_QUEBRA = 0.7",
+              "The silence between two words that forces a new subtitle to start. This is what makes the subtitles follow the speaker's breathing."
+            ],
+            [
+              "ESPERA_ANCORA = 6.0",
+              "How many seconds the first speech may take and still have subtitle 1 pulled back to `00:00:00,000`."
+            ]
+          ]
+        }
+      ]
+    },
+    "anchor": [
+      "Subtitle 1 starts at `00:00:00,000` so the file never opens with an empty gap where nothing is shown.",
+      "The exception is a video that opens with an intro sequence or long music, which Brazilians call a vinheta. There, subtitle 1 would have to wait more than `ESPERA_ANCORA` seconds (6 s) for anyone to speak, would sit frozen on screen for around 20 seconds and would give away the line before it is spoken. So when speech starts later than that, subtitle 1 simply waits for the real first word instead. That is exactly what happens with the video in `exemplo/`, which opens with 14 seconds of intro."
+    ]
+  },
+  "explainers": {
+    "title": "What is going on under the hood",
+    "hint": "Click any question to open the answer.",
+    "items": [
+      {
+        "q": "What is Google Colab?",
+        "a": [
+          "Colab is a website by Google where you open a notebook, which is a document made of blocks of code, and press a button to run it. The code does not run on your computer at all: it runs on a computer inside a Google data centre, borrowed to you for free while you use it.",
+          "That means nothing gets installed on your PC and nothing slows it down. It also means the borrowed computer is temporary: when your session ends or disconnects, that machine is thrown away along with anything you put on it."
+        ]
+      },
+      {
+        "q": "Why does the T4 GPU matter?",
+        "a": [
+          "A GPU is a graphics chip. It was invented to draw video game images, but it turns out the same maths makes it very good at running artificial intelligence models. The T4 is one of these chips, and Colab lends you one at no cost. Doing the same transcription on an ordinary processor would take many times longer.",
+          "Because it is free, it is also rationed: Google gives each account a daily allowance. If you use a lot of it, the notebook will stop with the message SEM GPU (no GPU) and you simply try again later."
+        ]
+      },
+      {
+        "q": "What actually happens to my audio?",
+        "a": [
+          "Your `.mp3` is fed to a speech recognition model called `large-v3`, run through a fast engine named `faster-whisper`. The model listens to the audio and writes down what it hears in Portuguese, in chunks, and it also records the exact start and end second of every single word.",
+          "Those word timings are the raw material for the subtitles. Cell 4 groups the words into short blocks that fit on screen, cleans up the start and end times so no two subtitles overlap, and writes the whole thing out as an `.srt` file."
+        ]
+      },
+      {
+        "q": "Why upload only the audio, never the video?",
+        "a": [
+          "This is the central promise of the project: no frame of your video is ever sent anywhere. The model does not look at pictures, so sending them would be pure waste and pure risk. Only the sound leaves your PC, and only to the Colab machine that transcribes it.",
+          "The audio is also deliberately small: mono, 16 kHz, 64 kbps, which is roughly 30 MB per hour of video. That is not a compromise, it is exactly the format the model converts everything into internally anyway, so a bigger file would upload slower and transcribe no better."
+        ]
+      },
+      {
+        "q": "What is an .srt file?",
+        "a": [
+          "An `.srt` is just plain text that you could open in Notepad. It is a list of numbered subtitle cues, and each cue is three things stacked up: a number, a line saying when it appears and when it disappears (for example `00:00:14,380 --> 00:00:17,120`), and then up to two lines of text.",
+          "Nothing is embedded into your video and nothing is re-encoded. Because the format is so simple, essentially every player reads it: VLC, YouTube, your TV, your phone."
+        ]
+      },
+      {
+        "q": "Why five cells, and why Run all?",
+        "a": [
+          "Each cell does one job and passes its result to the next one, like a relay: cell 2 decides which `.mp3` to use, cell 3 turns it into transcribed speech, cell 4 turns that into subtitles, cell 5 hands you the file. Running them out of order breaks the chain, because a later cell would be looking for something that does not exist yet.",
+          "Ambiente de execução (Runtime) > Executar tudo (Run all) simply runs all five from the top, in the right order, without you clicking anything else. That is why it is the only instruction you need for this whole stage."
+        ]
+      },
+      {
+        "q": "What exactly is /content?",
+        "a": [
+          "`/content` is the working folder of that borrowed cloud machine, the one place meant for your own files. It is what the Arquivos (Files) panel shows you the moment it opens, and it is the only folder cell 2 searches for your `.mp3`.",
+          "The folders sitting next to it, such as `bin`, `boot`, `dev`, `etc`, `usr` and `lib`, are the Linux operating system of the virtual machine. They are not for your files, so leave them alone. And remember that `/content` is wiped clean whenever the runtime restarts or disconnects, so anything you uploaded has to be uploaded again."
+        ]
+      }
+    ]
+  },
+  "cli": {
+    "title": "PowerShell, if you prefer the command line",
+    "body": "`CONVERTER.cmd` is only a wrapper around the converter script, so you can call that script yourself with a file, a folder, or nothing at all.",
+    "code": "python3 mp4_para_mp3.py meu_video.mp4\npython3 mp4_para_mp3.py C:\\videos\npython3 mp4_para_mp3.py"
+  },
+  "footer": {
+    "tested": "Run end to end on 2026-09-05 on a Tesla T4 with `faster-whisper 1.2.1` and `ctranslate2 4.8.2`: a 5 min 5 s video produced 54 subtitles in 22 s, the first at `00:00:14,380` because it opens with an intro, and a 45 s video produced 10 subtitles in 4 s, the first at `00:00:00,000`, with both `.srt` files downloading by themselves.",
+    "credit": "Sample videos from Senado Federal / TV Senado, via Wikimedia Commons, licensed CC BY 3.0."
+  }
+}/*END_EN*/};
+
+/* text with `backticks` -> <code>, escaped */
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const tx  = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+const ps  = arr => (arr || []).map(p => `<p>${tx(p)}</p>`).join('');
+const pre = code => code ? `<pre>${code.split('\n').map(l => `<span class="p">&gt;</span> ${esc(l)}`).join('\n')}</pre>` : '';
+const table = (t, cls) => !t ? '' : `
+  <h2>${esc(t.title)}</h2>
+  <div class="tbl"><table class="${cls || ''}">
+    <thead><tr>${t.head.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
+    <tbody>${t.rows.map(r => `<tr>${r.map(c => `<td>${tx(c)}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table></div>${t.note ? `<p class="note">${tx(t.note)}</p>` : ''}`;
+
+const SYS = ['bin','boot','dev','etc','lib','usr','var'];
+
+function render(d){
+  const flow = d.hero.flow.map((f, i) =>
+    `<div class="node"><div class="f mono">${esc(f)}</div><div class="n">${esc(d.hero.flowNotes[i] || '')}</div></div>`
+  ).join('<i class="link"></i>');
+
+  const steps = d.steps.map(s => `
+    <div class="step">
+      <div class="gutter"><div class="n">${esc(s.n)}</div><div class="t">${esc(s.time || '')}</div></div>
+      <div><h3>${tx(s.title)}</h3><div class="body">${ps(s.body)}</div>
+        ${s.list && s.list.length ? `<ol class="acts">${s.list.map(l => `<li>${tx(l)}</li>`).join('')}</ol>` : ''}
+        ${pre(s.code)}
+        ${s.note ? `<p class="note">${tx(s.note)}</p>` : ''}
+      </div>
+    </div>`).join('');
+
+  const c = d.critical;
+  const tree = `<div class="tree">
+      <div class="l root">/</div>
+      ${SYS.map(f => `<div class="l">&nbsp;&nbsp;${f}/</div>`).join('')}
+      <div class="l hit">&nbsp;&nbsp;content/</div>
+      <div class="l file">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;seu_audio.mp3</div>
+    </div>`;
+  const verdicts = `<div class="verdicts">
+      <div class="v yes"><div class="s">&check;</div><div><div class="p"><b>${esc(c.right.path)}</b> &mdash; ${esc(c.right.label)}</div><div class="p">${tx(c.right.text)}</div></div></div>
+      ${c.wrong.map(w => `<div class="v no"><div class="s">&times;</div><div><div class="p"><b>${esc(w.path)}</b></div><div class="p">${tx(w.text)}</div></div></div>`).join('')}
+    </div>`;
+
+  const ex = d.explainers ? `
+    <section id="under">
+      <h2>${esc(d.explainers.title)}</h2>
+      <p class="lede muted">${tx(d.explainers.hint)}</p>
+      <div class="cards">${d.explainers.items.map(i => `
+        <details class="card"><summary><i class="chev"></i>${tx(i.q)}</summary>
+          <div class="ans">${ps(i.a)}</div></details>`).join('')}</div>
+    </section>` : '';
+
+  const toc = [['setup', d.setup.title], ['passos', d.steps[0].title], ['content', c.title],
+               ['under', d.explainers ? d.explainers.title : ''], ['tempo', d.timing.title],
+               ['problemas', d.trouble.title]]
+    .filter(x => x[1]).map(([id, t]) => `<a href="#${id}">${esc(t.replace(/`/g, ''))}</a>`).join('');
+
+  document.getElementById('app').innerHTML = `
+    <section class="hero">
+      <p class="kicker">${tx(d.hero.kicker)}</p>
+      <h1>${tx(d.hero.title)}</h1>
+      <div class="frame"><span class="tc mono">00:00:00,000</span><div class="cue">${tx(d.hero.cue)}</div></div>
+      <p class="lede">${tx(d.hero.lede)}</p>
+      <div class="flow">${flow}</div>
+      <nav class="toc" aria-label="${esc(d.tocLabel)}">${toc}</nav>
+    </section>
+
+    <section id="setup">
+      <p class="kicker">${tx(d.setup.eyebrow)}</p>
+      <h2>${tx(d.setup.title)}</h2>
+      <div class="body">${ps(d.setup.body)}</div>
+      ${pre(d.setup.code)}
+      ${d.setup.note ? `<p class="note">${tx(d.setup.note)}</p>` : ''}
+    </section>
+
+    <section id="passos">${steps}</section>
+
+    <section id="content">
+      <div class="crit">
+        <span class="flag">${esc(c.flag)}</span>
+        <h2>${tx(c.title)}</h2>
+        <div class="body">${ps(c.body)}</div>
+        <div class="split">${tree}${verdicts}</div>
+        ${c.note ? `<p class="note">${tx(c.note)}</p>` : ''}
+      </div>
+    </section>
+
+    ${ex}
+
+    <section id="tempo">${table(d.timing)}</section>
+    <section id="problemas">${table(d.trouble)}</section>
+    <section id="dentro">
+      <h2>${tx(d.inside.title)}</h2>
+      <div class="body">${ps(d.inside.body)}</div>
+      <div class="tbl"><table class="cells"><tbody>
+        ${d.inside.cells.map(r => `<tr><td>${esc(r[0])}</td><td>${tx(r[1])}</td></tr>`).join('')}
+      </tbody></table></div>
+      ${d.inside.knobs ? `
+        <h3 style="margin-top:2.2rem">${tx(d.inside.knobs.title)}</h3>
+        <p class="body muted" style="margin-top:.5rem">${tx(d.inside.knobs.hint)}</p>
+        ${d.inside.knobs.groups.map(g => `
+          <h3 style="margin-top:1.8rem;font-size:.95rem;color:var(--muted)">${tx(g.title)}</h3>
+          <div class="tbl"><table class="knobs"><tbody>
+            ${g.items.map(r => `<tr><td>${tx(r[0])}</td><td>${tx(r[1])}</td></tr>`).join('')}
+          </tbody></table></div>
+          ${g.note ? `<p class="note">${tx(g.note)}</p>` : ''}`).join('')}` : ''}
+      <div class="body" style="margin-top:1.3rem">${ps(d.inside.anchor)}</div>
+    </section>
+    <section id="arquivos">${table(d.files)}
+      <h3 style="margin-top:2rem">${tx(d.cli.title)}</h3>
+      <p class="body muted" style="margin-top:.5rem">${tx(d.cli.body)}</p>
+      ${pre(d.cli.code)}
+    </section>`;
+
+  document.getElementById('foot').innerHTML =
+    `<p>${tx(d.footer.tested)}</p><p>${tx(d.footer.credit)}</p>`;
+}
+
+/* ---------- language ---------- */
+const sw = document.getElementById('switch');
+const thumb = document.getElementById('thumb');
+
+function moveThumb(btn){
+  thumb.style.width = btn.offsetWidth + 'px';
+  thumb.style.transform = `translateX(${btn.offsetLeft - 3}px)`;
+}
+function setLang(lang, save){
+  const deck = DECKS[lang];
+  if(!deck) return;
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+  sw.querySelectorAll('button').forEach(b => {
+    const on = b.dataset.set === lang;
+    b.setAttribute('aria-pressed', String(on));
+    if(on) moveThumb(b);
+  });
+  render(deck);
+  if(save) try{ localStorage.setItem('lang', lang); }catch(e){}
+}
+sw.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if(b) setLang(b.dataset.set, true);
+});
+addEventListener('resize', () => {
+  const on = sw.querySelector('[aria-pressed="true"]');
+  if(on) moveThumb(on);
+});
+
+let start = (navigator.language || '').toLowerCase().startsWith('pt') ? 'pt' : 'en';
+try{ const s = localStorage.getItem('lang'); if(s === 'pt' || s === 'en') start = s; }catch(e){}
+setLang(DECKS[start] ? start : 'pt', false);
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# Os videos e audios do usuario ficam soltos na raiz da pasta - nunca sobem
+# para o repositorio (o maior deles tem 2 GB, e o conteudo e pessoal).
+# Os padroes comecam com "/" de proposito: valem so na raiz, entao a pasta
+# exemplo/ continua versionada, que e de onde o README puxa o teste.
+/*.mp4
+/*.mkv
+/*.mov
+/*.avi
+/*.webm
+/*.m4v
+/*.mp3
+/*.srt
+
+# Lixo de ferramenta
+.playwright-mcp/
+__pycache__/
+*.pyc
