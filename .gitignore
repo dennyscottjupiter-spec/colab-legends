@@ -1,17 +1,126 @@
-# Os videos e audios do usuario ficam soltos na raiz da pasta - nunca sobem
-# para o repositorio (o maior deles tem 2 GB, e o conteudo e pessoal).
-# Os padroes comecam com "/" de proposito: valem so na raiz, entao a pasta
-# exemplo/ continua versionada, que e de onde o README puxa o teste.
-/*.mp4
-/*.mkv
-/*.mov
-/*.avi
-/*.webm
-/*.m4v
-/*.mp3
-/*.srt
+# =============================================================================
+#  REGRA DESTA PASTA: ignora TUDO por padrao, libera so o que esta listado.
+# =============================================================================
+#  Esta pasta e area de trabalho: e aqui que voce joga os videos para converter.
+#  Uma lista de proibidos ("nao suba .mp4") falha no dia em que aparece um
+#  arquivo que ninguem previu - um .pdf, um print, uma anotacao, um cookies.txt.
+#  Entao a logica e a inversa: nada entra no repositorio a menos que esteja
+#  liberado abaixo com "!". Arquivo novo = invisivel para o Git ate alguem
+#  liberar de proposito.
+#
+#  PARA ADICIONAR UM ARQUIVO NOVO AO REPOSITORIO: crie uma linha "!nome" na
+#  secao "Liberados". Sem isso, "git add" vai recusar (e esse e o objetivo).
+# =============================================================================
 
-# Lixo de ferramenta
-.playwright-mcp/
-__pycache__/
-*.pyc
+# --- 1. Porta fechada -------------------------------------------------------
+*
+
+# --- 2. Liberados: os arquivos do projeto -----------------------------------
+!.gitignore
+!README.md
+!CLAUDE.md
+!CONVERTER.cmd
+!mp4_para_mp3.py
+!transcrever_ptbr_colab.ipynb
+!guia.html
+
+# A pasta precisa ser reaberta antes dos arquivos que estao dentro dela:
+# o Git nao entra num diretorio ignorado, entao "!exemplo/" vem primeiro.
+!exemplo/
+!exemplo/amostra_ptbr.mp4
+!exemplo/amostra_ptbr.mp3
+!exemplo/amostra_ptbr.srt
+
+# --- 3. Tranca final: nunca, em hipotese alguma ------------------------------
+# Vem DEPOIS dos liberados de proposito. No .gitignore o ultimo padrao que
+# casa e o que vale, entao esta secao anula qualquer "!" escrito acima por
+# engano no futuro. Vale para qualquer subpasta.
+
+# Segredos e credenciais
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/*.pfx
+**/*.p12
+**/*.keystore
+**/*_rsa
+**/*_ed25519
+**/id_rsa*
+**/cookies.txt
+**/cookies*.txt
+**/*credential*
+**/*secret*
+**/*token*
+**/*password*
+**/*senha*
+**/client_secret*.json
+**/service-account*.json
+**/service_account*.json
+**/gcloud*.json
+**/.netrc
+**/.npmrc
+**/.pypirc
+**/.aws/
+**/.ssh/
+
+# Midia e transcricoes: o material pessoal do usuario
+**/*.mp4
+**/*.mkv
+**/*.mov
+**/*.avi
+**/*.webm
+**/*.m4v
+**/*.wmv
+**/*.flv
+**/*.ts
+**/*.mp3
+**/*.wav
+**/*.m4a
+**/*.aac
+**/*.flac
+**/*.ogg
+**/*.opus
+**/*.wma
+**/*.srt
+**/*.vtt
+**/*.ass
+**/*.sbv
+**/*.txt
+**/*.json
+**/*.csv
+**/*.pdf
+**/*.docx
+**/*.xlsx
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.zip
+**/*.7z
+**/*.rar
+
+# Ambiente, cache e lixo de ferramenta
+**/.venv/
+**/venv/
+**/env/
+**/__pycache__/
+**/*.pyc
+**/.ipynb_checkpoints/
+**/.playwright-mcp/
+**/.claude/
+**/.vscode/
+**/.idea/
+**/node_modules/
+**/*.log
+**/.DS_Store
+**/Thumbs.db
+**/desktop.ini
+
+# --- 4. Reabre so o que a secao 3 fechou por tabela --------------------------
+# A tranca acima e proposital e ampla, entao ela tambem pegou os tres arquivos
+# de exemplo/ e o proprio .gitignore. Reabre aqui, nominalmente - so estes.
+!exemplo/amostra_ptbr.mp4
+!exemplo/amostra_ptbr.mp3
+!exemplo/amostra_ptbr.srt
+!.gitignore
