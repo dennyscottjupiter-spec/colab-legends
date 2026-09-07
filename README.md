@@ -1,7 +1,7 @@
 ---
 title: Legendas PT-BR — do seu MP4 até o .srt pronto
 status: current
-updated: 2026-09-06
+updated: 2026-09-07
 ---
 
 # Legendas PT-BR em 3 passos
@@ -154,6 +154,11 @@ Se a resposta do modelo vier estranha em algum bloco, o notebook tenta de novo u
 assim não bater, **fica com o texto original daquele bloco**. Legenda que ficaria grande demais
 para a tela também volta ao original. Ou seja: a revisão só pode melhorar ou empatar.
 
+Uma legenda quase sempre é um pedaço de frase que continua na legenda seguinte, e o revisor tem
+mania de "fechar" esse pedaço com uma vírgula que não existe ("ela se torna," / "que privilegie,").
+O notebook não tenta convencer o modelo disso: ele **recusa no código** qualquer pontuação nova no
+fim de uma legenda cuja próxima começa com letra minúscula — sinal de que a frase continua lá.
+
 Para desligar a revisão, mude `POLIR = True` para `POLIR = False` no topo da célula 5.
 Aí o `.srt` final sai igualzinho ao bruto.
 
@@ -271,8 +276,23 @@ Rodado de ponta a ponta, com o notebook recém-enviado para o Colab e `Executar 
 > Esse teste é o registro daquele dia e o notebook mudou depois dele: a linha caiu de 42 para 40
 > caracteres, o corte de silêncio do VAD subiu de 0,5 s para 2 s, e entrou a etapa de revisão.
 > As duas primeiras coisas mudam onde as legendas quebram, então a contagem do `exemplo/` sai
-> diferente de 54 — não é regressão. Na versão atual o mesmo vídeo dá **58 legendas**, ainda com
-> a primeira em `00:00:14,380`.
+> diferente de 54 — não é regressão.
+
+## Teste da revisão (07/09/2026)
+
+Mesmo vídeo, notebook atual, `Executar tudo` numa T4:
+
+- 52 segmentos em **23 s**, 679 palavras → **58 legendas**, primeira em `00:00:14,380`;
+- revisão: `llama-cpp-python` com CUDA ativo, `Qwen3-8B-Q4_K_M` (5,03 GB) carregado na mesma GPU,
+  **3 blocos de legendas, nenhum descartado**, revisão inteira em **117 s**;
+- comparando o `_bruto.srt` com o `.srt` final: 282 linhas nos dois, **nenhum horário diferente**
+  e **uma linha de texto alterada** — `juro muito alto Procure` → `juro muito alto, procure`;
+- os dois `.srt` baixaram sozinhos pelo navegador.
+
+> Nessa mesma rodada o revisor tentou inventar vírgula no fim de outras 4 legendas; a guarda de
+> pontuação descrita acima recusou as 4. Foi ela que fechou o teste — três versões do prompt não
+> resolveram: proibir no texto deixava o modelo inerte (0 legendas tocadas) e reescrever o prompt
+> em torno da tarefa fazia ele mover palavra de uma legenda para outra.
 
 Vídeos de exemplo do Senado Federal / TV Senado, via Wikimedia Commons, licença **CC BY 3.0**
 (o do `exemplo/` foi reencodado para MP4 apenas para servir de teste).
